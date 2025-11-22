@@ -25,12 +25,19 @@
       Loading broadcast log...
     </section>
 
-   <form action="https://script.google.com/macros/s/PASTE_YOUR_URL_HERE/exec"
-      method="POST" onsubmit="this.reset(); alert('Submitted!'); return false;">
-  <input type="text" name="alias" placeholder="Alias (optional)">
-  <textarea name="rumor" placeholder="Whispers from the alley..." required></textarea>
+   <form id="rumorForm" 
+      action="https://docs.google.com/forms/d/e/1FAIpQLSdbMi_JxnxC-MEh3mqloi7klYWuROP1FHQEEtCpzBd8mzJu2w/formResponse" 
+      method="POST" 
+      target="hidden_iframe" 
+      onsubmit="submitted=true;">
+  
+  <input name="entry.1054060847" type="text" placeholder="alias or code name (optional)">
+  <textarea name="entry.1346085046" placeholder="rumor here" required></textarea>
+  
   <button type="submit">Submit Rumor</button>
+  <iframe name="hidden_iframe" style="display:none;"></iframe>
 </form>
+
 
 
   </div>
