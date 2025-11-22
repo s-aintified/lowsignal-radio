@@ -13,21 +13,9 @@ body {
 
 .radio-image {
   width: 100%;
-  max-height: 200px;
+  max-height: 250px;
   object-fit: cover;
   border-radius: 5px;
-}
-
-.flicker {
-  color: #ff8c8c;
-  text-align: center;
-  animation: flicker 2s infinite;
-}
-
-@keyframes flicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
-  75% { opacity: 0.3; }
 }
 
 .controls {
@@ -45,3 +33,143 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
+
+.submit-rumor-btn {
+  padding: 0.8rem 1rem;
+  text-decoration: none;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.g-2 .flicker {
+  background: linear-gradient(45deg, #5078D2, #F58264, #FFD787);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.g-2 .submit-rumor-btn {
+  background: linear-gradient(135deg, #5078D2, #F58264, #FFD787);
+  color: #fff;
+}
+
+.g-4 .flicker {
+  background: linear-gradient(45deg, #8A5A16, #DFA546, #F8CC76);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.g-4 .submit-rumor-btn {
+  background: linear-gradient(135deg, #8A5A16, #DFA546, #F8CC76);
+  color: #fff;
+}
+
+.g-6 .flicker {
+  background: linear-gradient(45deg, #A13D5B, #E8718A, #FFA0B2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.g-6 .submit-rumor-btn {
+  background: linear-gradient(135deg, #A13D5B, #E8718A, #FFA0B2);
+  color: #fff;
+}
+
+.g-7 .flicker {
+  background: linear-gradient(45deg, #161B2E, #353E58, #616B89);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.g-7 .submit-rumor-btn {
+  background: linear-gradient(135deg, #161B2E, #353E58, #616B89);
+  color: #fff;
+}
+
+.g-8 .flicker {
+  background: linear-gradient(45deg, #3D338D, #7362E8, #9D8CFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.g-8 .submit-rumor-btn {
+  background: linear-gradient(135deg, #3D338D, #7362E8, #9D8CFF);
+  color: #fff;
+}
+
+.g-9 .flicker {
+  background: linear-gradient(45deg, #823424, #BF5C40, #E89A65);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.g-9 .submit-rumor-btn {
+  background: linear-gradient(135deg, #823424, #BF5C40, #E89A65);
+  color: #fff;
+}
+
+.g-10 .flicker {
+  background: linear-gradient(45deg, #00666D, #289DA5, #5AD2DC);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.g-10 .submit-rumor-btn {
+  background: linear-gradient(135deg, #00666D, #289DA5, #5AD2DC);
+  color: #fff;
+}
+
+.g-11 .flicker {
+  background: linear-gradient(45deg, #360000, #760A0A, #AA2727);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.g-11 .submit-rumor-btn {
+  background: linear-gradient(135deg, #360000, #760A0A, #AA2727);
+  color: #fff;
+}
+
+.g-12 .flicker {
+  background: linear-gradient(45deg, #BEAF96, #E6DCC8, #FFFBEF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.g-12 .submit-rumor-btn {
+  background: linear-gradient(135deg, #BEAF96, #E6DCC8, #FFFBEF);
+  color: #fff;
+}
+
+.g-13 .flicker {
+  background: linear-gradient(45deg, #856CB6, #C1AAE8, #DFD0FC);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.g-13 .submit-rumor-btn {
+  background: linear-gradient(135deg, #856CB6, #C1AAE8, #DFD0FC);
+  color: #fff;
+}
+
+.g-14 .flicker {
+  background: linear-gradient(45deg, #78645A, #AA917D, #E1CDB9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.g-14 .submit-rumor-btn {
+  background: linear-gradient(135deg, #78645A, #AA917D, #E1CDB9);
+  color: #fff;
+}
+
+.g-16 .flicker {
+  background: linear-gradient(45deg, #683616, #B55F2B, #E89952);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.g-16 .submit-rumor-btn {
+  background: linear-gradient(135deg, #683616, #B55F2B, #E89952);
+  color: #fff;
+}
+
