@@ -1,4 +1,4 @@
-const sheetURL = 'https://docs.google.com/spreadsheets/d/1VJD8cHOQfY7TtdXt9f8Yn1JmzgQyeEj6UgZ2NpiEmfI/gviz/tq?tqx=out:json';
+const sheetURL = 'https://docs.google.com/spreadsheets/d/1ycfipQTU9ffFt-wwjnNjezL6XSO0eMSmaReiZh-I7VQ/gviz/tq?tqx=out:json';
 
 fetch(sheetURL)
   .then(res => res.text())
