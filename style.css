@@ -187,4 +187,11 @@ button {
   20%, 22%, 24%, 55% {
     opacity: 0.4;
   }
+
+.flicker {
+  animation: flicker 1.8s infinite;
+  display: inline-block;
+  margin: 0 auto;
+  text-align: center;
+}
 }
