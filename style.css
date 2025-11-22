@@ -1,0 +1,54 @@
+
+body {
+  background: #000;
+  color: #33ff33;
+  font-family: 'Courier New', Courier, monospace;
+  margin: 0;
+  padding: 2rem;
+}
+.terminal {
+  max-width: 800px;
+  margin: auto;
+  background: #0f0f0f;
+  padding: 2rem;
+  box-shadow: 0 0 10px #0f0;
+  border: 1px solid #33ff33;
+}
+.flicker {
+  animation: flicker 1.5s infinite alternate;
+  text-align: center;
+  font-size: 1.8rem;
+}
+@keyframes flicker {
+  0% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+.rumor-feed {
+  margin: 2rem 0;
+  padding: 1rem;
+  border: 1px dashed #33ff33;
+  min-height: 200px;
+  background: #111;
+}
+form input, form textarea {
+  width: 100%;
+  margin-top: 1rem;
+  background: #000;
+  color: #33ff33;
+  border: 1px solid #33ff33;
+  padding: 0.5rem;
+}
+button {
+  margin-top: 1rem;
+  padding: 0.7rem;
+  background: #000;
+  color: #33ff33;
+  border: 1px solid #33ff33;
+  cursor: pointer;
+  width: 100%;
+}
+.audio-button, .refresh {
+  margin-top: 1rem;
+  background: #111;
+}
