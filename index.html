@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Low Signal // Rumor Radio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="g-6"> <!-- Example: Romance group -->
+
+  <div class="container">
+    <header>
+      <img src="images/radio-header.png.jpg" alt="Radio Header" class="radio-image" width="100%" height="250">
+      <h1 class="flicker">LOW SIGNAL // RUMOR BROADCAST</h1>
+    </header>
+
+    <section class="controls">
+      <iframe style="border-radius:12px" 
+              src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator"
+              width="100%" height="80" frameBorder="0" allowfullscreen=""
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      <button onclick="location.reload()">🔁 Refresh Broadcast</button>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdbMi_JxnxC-MEh3mqloi7klYWuROP1FHQEEtCpzBd8mzJu2w/viewform" 
+         target="_blank" class="submit-rumor-btn">
+         ➕ Submit Rumor
+      </a>
+    </section>
+
+    <section id="rumor-feed">
+      Loading broadcast log...
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
