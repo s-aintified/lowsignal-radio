@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Low Signal Broadcast</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="terminal">
+    <h1 class="flicker">LOW SIGNAL // RUMOR BROADCAST</h1>
+    <button onclick="document.getElementById('static-audio').play()" class="audio-button">🔊 Tune In</button>
+    <audio id="static-audio" src="audio/static.mp3"></audio>
+    <div id="rumor-feed" class="rumor-feed">Loading broadcast logs...</div>
+    <form id="rumorForm" action="https://docs.google.com/forms/d/e/1FAIpQLSdu2K0W8_dg9lQL0P1K46NldqOlx98SuFNo2aUbjFy8IMjs9A/formResponse" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
+      <input name="entry.1483835135" type="text" placeholder="Alias (optional)">
+      <textarea name="entry.819964616" placeholder="Drop the rumor..." required></textarea>
+      <button type="submit">Submit Rumor</button>
+      <iframe name="hidden_iframe" style="display:none;"></iframe>
+    </form>
+    <button onclick="location.reload()" class="refresh">🔁 Refresh Broadcast</button>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
