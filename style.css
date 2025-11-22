@@ -23,14 +23,6 @@ header {
   margin-bottom: 2rem;
 }
 
-.radio-image {
-  max-width: 100%;
-  height: auto;
-  margin-bottom: 1rem;
-  border: 2px solid #ff8c8c;
-  box-shadow: 0 0 20px #ff8c8c44;
-}
-
 .flicker {
   font-size: 2rem;
   color: #ff8c8c;
