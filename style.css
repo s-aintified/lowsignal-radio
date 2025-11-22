@@ -40,19 +40,6 @@ button {
   border-radius: 5px;
   display: inline-block;
 }
-.flicker {
-  animation: flicker 1.8s infinite;
-  display: inline-block;
-}
-
-@keyframes flicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-    opacity: 1;
-  }
-  20%, 22%, 24%, 55% {
-    opacity: 0.4;
-  }
-}
 
 .g-2 .flicker {
   background: linear-gradient(45deg, #5078D2, #F58264, #FFD787);
@@ -186,3 +173,18 @@ button {
   color: #fff;
 }
 
+
+
+.flicker {
+  animation: flicker 1.8s infinite;
+  display: inline-block;
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    opacity: 1;
+  }
+  20%, 22%, 24%, 55% {
+    opacity: 0.4;
+  }
+}
