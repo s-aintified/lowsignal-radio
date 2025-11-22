@@ -8,8 +8,8 @@ fetch(sheetURL)
     const feed = document.getElementById('rumor-feed');
     feed.innerHTML = '';
     rows.reverse().forEach(row => {
-      const alias = row.c[0] ? row.c[0].v : 'Anonymous';
-      const message = row.c[1] ? row.c[1].v : '';
+     const alias = row.c[1] ? row.c[1].v : 'Anonymous';
+const message = row.c[2] ? row.c[2].v : '';
       if (message.trim()) {
         const div = document.createElement('div');
         div.innerHTML = `<p><strong>🎙️ ${alias}</strong>: ${message}</p>`;
