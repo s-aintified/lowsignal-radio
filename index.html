@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Low Signal // Rumor Radio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="container">
+    <header>
+      <img src="images/radio-header.png" alt="Radio Header" class="radio-image">
+      <h1 class="flicker">LOW SIGNAL // RUMOR BROADCAST</h1>
+    </header>
+
+    <section class="controls">
+      <iframe style="border-radius:12px" 
+              src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator"
+              width="100%" height="80" frameBorder="0" allowfullscreen=""
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      <button onclick="location.reload()">🔁 Refresh Broadcast</button>
+    </section>
+
+    <section id="rumor-feed">
+      Loading broadcast log...
+    </section>
+
+    <form id="rumorForm" 
+          action="https://docs.google.com/forms/d/e/1FAIpQLSdbMi_JxnxC-MEh3mqloi7klYWuROP1FHQEEtCpzBd8mzJu2w/formResponse" 
+          method="POST" target="hidden_iframe" onsubmit="submitted=true;">
+      <input name="entry.1054060847" type="text" placeholder="Alias (optional)">
+      <textarea name="entry.1346085046" placeholder="Whispers from the alley..." required></textarea>
+      <button type="submit">Submit Rumor</button>
+      <iframe name="hidden_iframe" style="display:none;"></iframe>
+    </form>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
