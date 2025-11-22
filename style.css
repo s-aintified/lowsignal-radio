@@ -20,7 +20,7 @@ body {
 .container {
   position: relative;
   z-index: 2;
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -28,14 +28,6 @@ body {
 header {
   text-align: center;
   margin-bottom: 2rem;
-}
-
-.radio-image {
-  max-width: 100%;
-  height: auto;
-  margin-bottom: 1rem;
-  border: 2px solid #ff8c8c;
-  box-shadow: 0 0 20px #ff8c8c44;
 }
 
 .flicker {
