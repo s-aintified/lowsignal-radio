@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Finance — My Little Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <nav class="topnav">
+      <a class="brand" href="index.html">✨ My Little Dashboard</a>
+      <div class="nav-links">
+        <a href="index.html">🏠 Home</a>
+        <a href="finance.html">💸 Finance</a>
+        <a href="diary.html">📔 Diary</a>
+      </div>
+      <div class="nav-tools">
+        <button id="calm-toggle" class="icon-btn" title="Toggle calm mode (less motion)" aria-pressed="false">🎐</button>
+        <button id="theme-toggle" class="icon-btn" title="Toggle light/dark theme">🌙</button>
+      </div>
+    </nav>
+
+    <header>
+      <h1 class="page-title">💸 Finance</h1>
+      <p class="subtitle">Income, bills, subscriptions, and reminders — all in one calm place.</p>
+    </header>
+
+    <div id="reminder-banner-slot"></div>
+
+    <div class="card">
+      <h2>📊 Summary</h2>
+      <div class="stat-grid" id="summary-grid"></div>
+    </div>
+
+    <div class="card">
+      <h2>💰 Income</h2>
+      <details class="add-form" id="income-form-wrap">
+        <summary>Add income source</summary>
+        <form id="income-form">
+          <div class="form-row">
+            <div class="field">
+              <label for="income-name">Name</label>
+              <input type="text" id="income-name" placeholder="e.g. Salary" required>
+            </div>
+            <div class="field">
+              <label for="income-amount">Amount</label>
+              <input type="number" id="income-amount" step="0.01" min="0" placeholder="0.00" required>
+            </div>
+            <div class="field">
+              <label for="income-frequency">Frequency</label>
+              <select id="income-frequency">
+                <option value="monthly">Monthly</option>
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Every 2 weeks</option>
+                <option value="yearly">Yearly</option>
+                <option value="one-time">One-time</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">✅ Save income</button>
+          </div>
+        </form>
+      </details>
+      <div class="row-list" id="income-list"></div>
+    </div>
+
+    <div class="card">
+      <h2>🧾 Bills &amp; subscriptions</h2>
+      <details class="add-form" id="bill-form-wrap">
+        <summary>Add bill or subscription</summary>
+        <form id="bill-form">
+          <div class="form-row">
+            <div class="field">
+              <label for="bill-name">Name</label>
+              <input type="text" id="bill-name" placeholder="e.g. Netflix" required>
+            </div>
+            <div class="field">
+              <label for="bill-amount">Amount</label>
+              <input type="number" id="bill-amount" step="0.01" min="0" placeholder="0.00" required>
+            </div>
+            <div class="field">
+              <label for="bill-due">Next due date</label>
+              <input type="date" id="bill-due" required>
+            </div>
+            <div class="field">
+              <label for="bill-frequency">Repeats</label>
+              <select id="bill-frequency">
+                <option value="monthly">Monthly</option>
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Every 2 weeks</option>
+                <option value="yearly">Yearly</option>
+                <option value="one-time">One-time</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="bill-category">Category</label>
+              <select id="bill-category">
+                <option value="Bill">Bill</option>
+                <option value="Subscription">Subscription</option>
+                <option value="Rent/Mortgage">Rent/Mortgage</option>
+                <option value="Loan">Loan</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">✅ Save bill</button>
+          </div>
+        </form>
+      </details>
+      <div class="row-list" id="bill-list"></div>
+    </div>
+
+    <footer class="note">Your numbers stay on this device — nothing is uploaded anywhere.</footer>
+  </div>
+
+  <div id="toast-region" aria-live="polite"></div>
+  <script src="app.js"></script>
+  <script src="finance.js"></script>
+</body>
+</html>
