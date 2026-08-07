@@ -658,10 +658,9 @@
 
   window.onYouTubeIframeAPIReady = function(){
     if(!usePlaylist) loadArt(VIDEO_IDS[currentIndex]);
-    ytPlayer = new YT.Player('ytHost', {
+    const baseConfig = {
       height: '1',
       width: '1',
-      videoId: usePlaylist ? undefined : VIDEO_IDS[currentIndex],
       playerVars: Object.assign({
         autoplay: 0,
         controls: 0,
@@ -674,7 +673,9 @@
         onStateChange: onPlayerStateChange,
         onError: onPlayerError
       }
-    });
+    };
+    if(!usePlaylist){ baseConfig.videoId = VIDEO_IDS[currentIndex]; }
+    ytPlayer = new YT.Player('ytHost', baseConfig);
   };
 
   function onPlayerReady(){
