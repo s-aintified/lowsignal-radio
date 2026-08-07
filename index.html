@@ -1,38 +1,871 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Low Signal // Rumor Radio</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LOW SIGNAL — Rumor Broadcast Radio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Caveat:wght@500;600&family=Work+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     LOW SIGNAL — site design tokens (mirrors Experiment 777)
+     ============================================================ */
+  :root,
+  [data-theme="dark"]{
+    --bg: #0A0A0A;
+    --card-rgb: 10,10,10;
+    --ink: #E4E6EA;
+    --ink-soft: #9498A0;
+    --border: #1D1D1F;
+    --placeholder: #3A3D42;
+    --cyan: #5FC9D6;
+    --violet: #7A6FC4;
+    --violet-lt: #9A8FE0;
+    --amber: #D98E3B;
+    --live: #5AC88C;
+    --rose: #E85E7A;
+    --card-op: 0.80;
+
+    --hair-02: rgba(255,255,255,.02);
+    --hair-03: rgba(255,255,255,.03);
+    --hair-035: rgba(255,255,255,.035);
+    --hair-04: rgba(255,255,255,.04);
+    --hair-045: rgba(255,255,255,.045);
+    --hair-05: rgba(255,255,255,.05);
+    --hair-06: rgba(255,255,255,.06);
+    --amber-text: var(--amber);
+
+    --g1: 217,142,59;
+    --g2: 122,111,196;
+    --g3: 95,201,214;
+  }
+  [data-theme="light"]{
+    --bg: #EFF1F2;
+    --card-rgb: 255,255,255;
+    --ink: #1A1C1E;
+    --ink-soft: #5C6066;
+    --border: #D5D8DA;
+    --placeholder: #C9CCCF;
+    --cyan: #2B94A3;
+    --violet: #574C9E;
+    --violet-lt: #6E60B8;
+    --amber: #A9660F;
+    --live: #2E9160;
+    --rose: #C23A5A;
+    --card-op: 0.92;
+
+    --hair-02: rgba(0,0,0,.035);
+    --hair-03: rgba(0,0,0,.045);
+    --hair-035: rgba(0,0,0,.05);
+    --hair-04: rgba(0,0,0,.055);
+    --hair-045: rgba(0,0,0,.06);
+    --hair-05: rgba(0,0,0,.07);
+    --hair-06: rgba(0,0,0,.08);
+    --amber-text: #101010;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    min-height:100%;
+    transition:background .15s ease, color .15s ease;
+  }
+  a{color:inherit;}
+
+  .ls-wrap{
+    max-width:880px;
+    margin:24px auto;
+    padding:26px;
+  }
+
+  /* ===== Header banner ===== */
+  .ls-banner{
+    position:relative;
+    border-radius:18px;
+    overflow:hidden;
+    border:1px solid var(--border);
+    height:170px;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.75)),
+      url("images/radio-header.png.jpg") center/cover;
+  }
+  [data-theme="light"] .ls-banner{
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.1), rgba(0,0,0,.6)),
+      url("images/radio-header.png.jpg") center/cover;
+  }
+  .ls-banner-inner{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:0 20px;
+  }
+  .ls-callsign{
+    font-family:'Space Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,.65);
+    margin-bottom:8px;
+  }
+  .ls-title{
+    font-family:'Oswald', sans-serif;
+    font-weight:700;
+    font-size:26px;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    color:#fff;
+    margin:0;
+    animation:ls-flicker 4.4s infinite;
+  }
+  .ls-title .tag{
+    display:block;
+    font-family:'Caveat', cursive;
+    font-weight:600;
+    font-size:18px;
+    color:rgb(var(--g1));
+    text-transform:none;
+    letter-spacing:0;
+    margin-top:4px;
+  }
+  @keyframes ls-flicker{
+    0%,19%,21%,23%,25%,54%,56%,100%{opacity:1;}
+    20%,22%,24%,55%{opacity:.55;}
+  }
+  .ls-theme-toggle{
+    position:absolute;
+    top:12px;
+    right:12px;
+    background:rgba(0,0,0,.4);
+    border:1px solid rgba(255,255,255,.2);
+    color:#fff;
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    backdrop-filter:blur(3px);
+  }
+  .ls-theme-toggle:hover{border-color:var(--amber);}
+
+  /* ===== Player card ===== */
+  .ls-player{
+    margin-top:18px;
+    display:grid;
+    grid-template-columns:132px 1fr;
+    gap:18px;
+    padding:18px;
+    background:rgba(var(--card-rgb), var(--card-op));
+    border:1px solid var(--border);
+    border-radius:18px;
+  }
+  @media(max-width:560px){
+    .ls-player{grid-template-columns:1fr; text-align:center;}
+  }
+
+  .ls-art{
+    position:relative;
+    width:132px;
+    height:132px;
+    border-radius:14px;
+    overflow:hidden;
+    background:var(--hair-03);
+    border:1px solid var(--border);
+    flex-shrink:0;
+  }
+  @media(max-width:560px){ .ls-art{margin:0 auto;} }
+  .ls-art img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    filter:saturate(1.05);
+  }
+  .ls-art-ring{
+    position:absolute;
+    inset:-2px;
+    border-radius:16px;
+    border:2px solid transparent;
+    pointer-events:none;
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .ls-player.is-playing .ls-art-ring{
+    border-color:rgb(var(--g1));
+    box-shadow:0 0 0 1px rgba(var(--g1),.4), 0 0 22px rgba(var(--g2),.35);
+    animation:ls-art-pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes ls-art-pulse{
+    0%,100%{box-shadow:0 0 0 1px rgba(var(--g1),.4), 0 0 22px rgba(var(--g2),.25);}
+    50%{box-shadow:0 0 0 1px rgba(var(--g1),.6), 0 0 30px rgba(var(--g2),.45);}
+  }
+
+  .ls-meta{min-width:0;}
+  .ls-onair{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    border:1px solid rgba(90,200,140,.5);
+    border-radius:20px;
+    padding:3px 10px;
+    font-family:'Space Mono', monospace;
+    font-size:9.5px;
+    font-weight:700;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--live);
+    margin-bottom:10px;
+  }
+  .ls-onair .dot{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--live);
+  }
+  .ls-player.is-playing .ls-onair .dot{
+    animation:ls-livepulse 1.6s ease-in-out infinite;
+  }
+  @keyframes ls-livepulse{
+    0%,100%{box-shadow:0 0 4px 1px rgba(90,200,140,.7); opacity:1;}
+    50%{box-shadow:0 0 10px 4px rgba(90,200,140,.35); opacity:.7;}
+  }
+
+  .ls-track-title{
+    font-family:'Oswald', sans-serif;
+    font-weight:600;
+    font-size:16px;
+    color:var(--ink);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .ls-track-artist{
+    font-family:'Space Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.05em;
+    color:var(--ink-soft);
+    margin-top:3px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* VU bars */
+  .ls-vu{
+    display:flex;
+    align-items:flex-end;
+    gap:3px;
+    height:16px;
+    margin-top:10px;
+  }
+  @media(max-width:560px){ .ls-vu{justify-content:center;} }
+  .ls-vu span{
+    width:3px;
+    height:30%;
+    border-radius:2px;
+    background:linear-gradient(180deg, rgb(var(--g1)), rgb(var(--g2)));
+    opacity:.35;
+    transition:opacity .2s ease;
+  }
+  .ls-player.is-playing .ls-vu span{
+    opacity:1;
+    animation:ls-vu-bounce .9s ease-in-out infinite;
+  }
+  .ls-vu span:nth-child(1){animation-delay:0s;}
+  .ls-vu span:nth-child(2){animation-delay:.12s;}
+  .ls-vu span:nth-child(3){animation-delay:.24s;}
+  .ls-vu span:nth-child(4){animation-delay:.36s;}
+  .ls-vu span:nth-child(5){animation-delay:.18s;}
+  .ls-vu span:nth-child(6){animation-delay:.3s;}
+  @keyframes ls-vu-bounce{
+    0%,100%{height:25%;}
+    50%{height:100%;}
+  }
+
+  /* progress + controls */
+  .ls-progress-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:12px;
+  }
+  .ls-time{
+    font-family:'Space Mono', monospace;
+    font-size:9.5px;
+    color:var(--ink-soft);
+    min-width:32px;
+  }
+  .ls-time.end{text-align:right;}
+  .ls-scrub{
+    flex:1;
+    -webkit-appearance:none;
+    appearance:none;
+    height:4px;
+    border-radius:4px;
+    background:var(--hair-05);
+    outline:none;
+    cursor:pointer;
+  }
+  .ls-scrub::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:12px;height:12px;border-radius:50%;
+    background:rgb(var(--g1));
+    box-shadow:0 0 6px rgba(var(--g1),.6);
+    cursor:pointer;
+  }
+  .ls-scrub::-moz-range-thumb{
+    width:12px;height:12px;border-radius:50%;border:0;
+    background:rgb(var(--g1));
+    cursor:pointer;
+  }
+
+  .ls-controls-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:12px;
+    flex-wrap:wrap;
+  }
+  @media(max-width:560px){ .ls-controls-row{justify-content:center;} }
+
+  .ls-ctrl-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:32px;height:32px;
+    border-radius:50%;
+    background:var(--hair-03);
+    border:1px solid var(--border);
+    color:var(--ink-soft);
+    cursor:pointer;
+    font-size:13px;
+    transition:border-color .15s ease, color .15s ease, background .15s ease;
+  }
+  .ls-ctrl-btn:hover{border-color:var(--amber); color:var(--amber-text);}
+  .ls-ctrl-btn:disabled{opacity:.35; cursor:default;}
+  .ls-ctrl-btn:disabled:hover{border-color:var(--border); color:var(--ink-soft);}
+
+  .ls-play-btn{
+    width:44px;height:44px;
+    background:linear-gradient(120deg, rgb(var(--g1)), rgb(var(--g2)), rgb(var(--g3)));
+    color:#101010;
+    border:0;
+    font-size:15px;
+  }
+  .ls-play-btn:hover{filter:brightness(1.08); color:#101010;}
+
+  .ls-vol-wrap{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-left:auto;
+  }
+  @media(max-width:560px){ .ls-vol-wrap{margin-left:0;} }
+  .ls-vol{
+    -webkit-appearance:none;
+    appearance:none;
+    width:70px;
+    height:4px;
+    border-radius:4px;
+    background:var(--hair-05);
+    outline:none;
+    cursor:pointer;
+  }
+  .ls-vol::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:10px;height:10px;border-radius:50%;
+    background:var(--ink-soft);
+    cursor:pointer;
+  }
+  .ls-vol::-moz-range-thumb{
+    width:10px;height:10px;border-radius:50%;border:0;
+    background:var(--ink-soft);
+    cursor:pointer;
+  }
+
+  .ls-yt-note{
+    font-family:'Space Mono', monospace;
+    font-size:9px;
+    letter-spacing:.06em;
+    color:var(--placeholder);
+    margin-top:10px;
+  }
+  .ls-yt-note a{color:var(--ink-soft); text-decoration:underline;}
+
+  /* hidden YT iframe host */
+  #ytHost{
+    position:absolute;
+    width:1px;height:1px;
+    opacity:0;
+    overflow:hidden;
+    pointer-events:none;
+  }
+
+  /* ===== action row ===== */
+  .ls-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin:18px 0;
+  }
+  .ls-btn{
+    background:var(--hair-03);
+    border:1px solid var(--border);
+    color:var(--ink-soft);
+    padding:10px 18px;
+    border-radius:20px;
+    cursor:pointer;
+    font-family:'Space Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    transition:background .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .ls-btn:hover{border-color:var(--amber); color:var(--amber-text); background:rgba(217,142,59,0.08);}
+  .ls-btn.grad{
+    background:linear-gradient(120deg, rgb(var(--g1)), rgb(var(--g2)), rgb(var(--g3)));
+    border-color:transparent;
+    color:#101010;
+    font-weight:700;
+  }
+  .ls-btn.grad:hover{filter:brightness(1.06); color:#101010;}
+
+  /* ===== rumor feed ===== */
+  .ls-feed-head{
+    font-family:'Space Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    text-align:center;
+    margin-bottom:12px;
+  }
+  #rumor-feed{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .ls-rumor-loading, .ls-rumor-empty{
+    text-align:center;
+    font-family:'Space Mono', monospace;
+    font-size:10.5px;
+    color:var(--placeholder);
+    padding:20px 0;
+  }
+  .ls-rumor-row{
+    background:var(--hair-02);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px 14px;
+    font-family:'Work Sans', sans-serif;
+    font-size:13px;
+    line-height:1.55;
+    color:var(--ink-soft);
+  }
+  .ls-rumor-row .who{
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    font-size:10.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--amber-text);
+    margin-right:6px;
+  }
+
+  @media (max-width:600px){
+    .ls-wrap{padding:16px;}
+    .ls-banner{height:150px;}
+    .ls-title{font-size:20px;}
+  }
+</style>
 </head>
-<body class="g-6"> <!-- Example: Romance group -->
+<body>
 
-  <div class="container">
-    <header>
-      <img src="images/radio-header.png.jpg" alt="Radio Header" class="radio-image" width="100%" height="250">
-      <h1 class="flicker">LOW SIGNAL // RUMOR BROADCAST RADIO</h1> 
-    
+<div class="ls-wrap">
 
-    </header>
-
-    <section class="controls">
-      <iframe style="border-radius:12px" 
-              src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator"
-              width="100%" height="80" frameBorder="0" allowfullscreen=""
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-      <button onclick="location.reload()">🔁 Refresh Broadcast</button>
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdbMi_JxnxC-MEh3mqloi7klYWuROP1FHQEEtCpzBd8mzJu2w/viewform" 
-         target="_blank" class="submit-rumor-btn">
-         ➕ Submit Rumor
-      </a>
-    </section>
-
-    <section id="rumor-feed">
-      Loading broadcast log...
-    </section>
+  <div class="ls-banner">
+    <button class="ls-theme-toggle" id="themeToggle" title="toggle theme" type="button">🌙</button>
+    <div class="ls-banner-inner">
+      <div class="ls-callsign">LWSGNL · 91.4 FM · frequency of the unverified</div>
+      <h1 class="ls-title">Low Signal<span class="tag">rumor broadcast radio</span></h1>
+    </div>
   </div>
 
-  <script src="script.js"></script>
+  <div class="ls-player" id="player">
+    <div class="ls-art">
+      <img id="artImg" src="" alt="now playing">
+      <div class="ls-art-ring"></div>
+    </div>
+    <div class="ls-meta">
+      <span class="ls-onair"><span class="dot"></span> On Air</span>
+      <div class="ls-track-title" id="trackTitle">tuning in…</div>
+      <div class="ls-track-artist" id="trackArtist">&nbsp;</div>
+      <div class="ls-vu">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <div class="ls-progress-row">
+        <span class="ls-time" id="timeCurrent">0:00</span>
+        <input type="range" class="ls-scrub" id="scrub" min="0" max="100" value="0" step="0.1">
+        <span class="ls-time end" id="timeTotal">0:00</span>
+      </div>
+
+      <div class="ls-controls-row">
+        <button class="ls-ctrl-btn" id="prevBtn" title="previous track">⏮</button>
+        <button class="ls-ctrl-btn ls-play-btn" id="playBtn" title="play/pause">▶</button>
+        <button class="ls-ctrl-btn" id="nextBtn" title="next track">⏭</button>
+        <div class="ls-vol-wrap">
+          <button class="ls-ctrl-btn" id="muteBtn" title="mute" style="width:26px;height:26px;font-size:11px;">🔊</button>
+          <input type="range" class="ls-vol" id="volSlider" min="0" max="100" value="70">
+        </div>
+      </div>
+
+      <div class="ls-yt-note" id="ytNote" style="display:none;"></div>
+    </div>
+  </div>
+
+  <div id="ytHost"></div>
+
+  <div class="ls-actions">
+    <a class="ls-btn" id="refreshBtn" href="#">🔁 refresh broadcast</a>
+    <a class="ls-btn grad" href="https://docs.google.com/forms/d/e/1FAIpQLSdbMi_JxnxC-MEh3mqloi7klYWuROP1FHQEEtCpzBd8mzJu2w/viewform" target="_blank" rel="noopener">➕ submit rumor</a>
+  </div>
+
+  <div class="ls-feed-head">broadcast log</div>
+  <section id="rumor-feed">
+    <div class="ls-rumor-loading">loading broadcast log…</div>
+  </section>
+
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+/* ===== SITE THEME (dark/light) — shares the same key as the main wrapper ===== */
+(function(){
+  const saved = localStorage.getItem('site-theme');
+  document.documentElement.setAttribute('data-theme', (saved === 'light' || saved === 'dark') ? saved : 'dark');
+  const btn = document.getElementById('themeToggle');
+  function paintIcon(){
+    btn.textContent = document.documentElement.getAttribute('data-theme') === 'light' ? '☀️' : '🌙';
+  }
+  paintIcon();
+  btn.addEventListener('click', ()=>{
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('site-theme', next);
+    paintIcon();
+  });
+})();
+
+/* ===== THEME BY MEMBERGROUP/URL — matches Experiment 777's real group IDs ===== */
+(function(){
+  const THEMES={
+    'g-6':  ['214,232,92',  '122,92,232', '232,92,168'],
+    'g-17': ['144,85,162',  '212,153,185','232,193,197'],
+    'g-19': ['26,20,35',    '96,64,128',  '237,255,134'],
+    'g-26': ['232,194,92',  '232,92,92',  '122,32,42'],
+    'g-12': ['251,139,36',  '217,3,104',  '130,2,99'],
+    'g-31': ['255,234,61',  '61,220,255', '30,58,95'],
+    'g-27': ['216,203,176', '143,168,140','176,204,208'],
+    'g-9':  ['255,71,136',  '93,148,172', '255,122,40'],
+    'g-8':  ['179,156,77',  '118,137,72', '35,59,67'],
+    'g-29': ['20,40,80',    '208,173,167','70,110,160'],
+    'g-2':  ['217,142,59',  '122,111,196','95,201,214'],
+    'g-3':  ['255,166,48',  '215,232,186','77,161,169'],
+    'g-4':  ['174,230,75',  '95,201,214', '18,18,18']
+  };
+  const params=new URLSearchParams(location.search);
+  const urlKey=params.get('theme');
+  const bodyKey=[...document.body.classList].find(c=>THEMES[c]);
+  const key=(urlKey && THEMES[urlKey]) ? urlKey : (bodyKey || 'g-2');
+  const [a,b,c]=THEMES[key];
+  document.documentElement.style.setProperty('--g1',a);
+  document.documentElement.style.setProperty('--g2',b);
+  document.documentElement.style.setProperty('--g3',c);
+})();
+
+/* ===== RADIO PLAYER (YouTube IFrame API) ===== */
+(function(){
+  // Playlist — add more video IDs here as you build one out.
+  // Next/prev will cycle through this array automatically.
+  const VIDEO_IDS = ['fTKqtvXjkvo'];
+
+  let ytPlayer = null;
+  let currentIndex = 0;
+  let isReady = false;
+  let scrubbing = false;
+  let pollTimer = null;
+  let currentWatchUrl = '';
+  let erroredIds = new Set();
+
+  const playerEl = document.getElementById('player');
+  const artImg = document.getElementById('artImg');
+  const trackTitle = document.getElementById('trackTitle');
+  const trackArtist = document.getElementById('trackArtist');
+  const playBtn = document.getElementById('playBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const muteBtn = document.getElementById('muteBtn');
+  const volSlider = document.getElementById('volSlider');
+  const scrub = document.getElementById('scrub');
+  const timeCurrent = document.getElementById('timeCurrent');
+  const timeTotal = document.getElementById('timeTotal');
+  const ytNote = document.getElementById('ytNote');
+
+  function fmtTime(sec){
+    if(!isFinite(sec) || sec < 0) sec = 0;
+    const m = Math.floor(sec/60);
+    const s = Math.floor(sec%60).toString().padStart(2,'0');
+    return `${m}:${s}`;
+  }
+
+  function loadArt(videoId){
+    artImg.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+    currentWatchUrl = `https://www.youtube.com/watch?v=${videoId}`;
+    ytNote.style.display = 'none';
+    ytNote.innerHTML = '';
+  }
+
+  function updateNavButtons(){
+    const multi = VIDEO_IDS.length > 1;
+    prevBtn.disabled = !multi;
+    nextBtn.disabled = !multi;
+  }
+
+  window.onYouTubeIframeAPIReady = function(){
+    loadArt(VIDEO_IDS[currentIndex]);
+    ytPlayer = new YT.Player('ytHost', {
+      height: '1',
+      width: '1',
+      videoId: VIDEO_IDS[currentIndex],
+      playerVars: {
+        autoplay: 0,
+        controls: 0,
+        modestbranding: 1,
+        rel: 0,
+        playsinline: 1
+      },
+      events: {
+        onReady: onPlayerReady,
+        onStateChange: onPlayerStateChange,
+        onError: onPlayerError
+      }
+    });
+  };
+
+  function onPlayerReady(){
+    isReady = true;
+    ytPlayer.setVolume(Number(volSlider.value));
+    updateMetaFromPlayer();
+    updateNavButtons();
+  }
+
+  function updateMetaFromPlayer(){
+    try{
+      const data = ytPlayer.getVideoData();
+      trackTitle.textContent = data && data.title ? data.title : 'now broadcasting';
+      trackArtist.textContent = data && data.author ? data.author : '\u00A0';
+    }catch(e){
+      trackTitle.textContent = 'now broadcasting';
+    }
+    const dur = ytPlayer.getDuration ? ytPlayer.getDuration() : 0;
+    timeTotal.textContent = fmtTime(dur);
+    scrub.max = dur || 100;
+  }
+
+  function onPlayerStateChange(e){
+    const state = e.data;
+    if(state === YT.PlayerState.PLAYING){
+      playerEl.classList.add('is-playing');
+      playBtn.textContent = '⏸';
+      updateMetaFromPlayer();
+      startPolling();
+    } else if(state === YT.PlayerState.PAUSED){
+      playerEl.classList.remove('is-playing');
+      playBtn.textContent = '▶';
+      stopPolling();
+    } else if(state === YT.PlayerState.ENDED){
+      goNext();
+    } else if(state === YT.PlayerState.CUED){
+      updateMetaFromPlayer();
+    }
+  }
+
+  function onPlayerError(e){
+    const failedId = VIDEO_IDS[currentIndex];
+    erroredIds.add(failedId);
+
+    // codes 101/150 = embedding disabled by the uploader; 100 = removed/private; 2 = bad id
+    playerEl.classList.remove('is-playing');
+    playBtn.textContent = '▶';
+    stopPolling();
+
+    const stillGood = VIDEO_IDS.filter(id => !erroredIds.has(id));
+    if(stillGood.length){
+      // auto-skip to the next playable track rather than dead-ending
+      trackTitle.textContent = 'skipping unplayable track…';
+      trackArtist.textContent = '\u00A0';
+      setTimeout(goNext, 900);
+    } else {
+      trackTitle.textContent = 'this track can\u2019t play inline';
+      trackArtist.textContent = 'its owner disabled outside playback';
+      ytNote.style.display = 'block';
+      ytNote.innerHTML = `try a different track, or <a href="${currentWatchUrl}" target="_blank" rel="noopener">watch this one on youtube ↗</a>`;
+    }
+  }
+
+  function startPolling(){
+    stopPolling();
+    pollTimer = setInterval(()=>{
+      if(!isReady || scrubbing) return;
+      const cur = ytPlayer.getCurrentTime ? ytPlayer.getCurrentTime() : 0;
+      const dur = ytPlayer.getDuration ? ytPlayer.getDuration() : 0;
+      timeCurrent.textContent = fmtTime(cur);
+      if(dur){
+        timeTotal.textContent = fmtTime(dur);
+        scrub.max = dur;
+        scrub.value = cur;
+      }
+    }, 500);
+  }
+  function stopPolling(){
+    if(pollTimer){ clearInterval(pollTimer); pollTimer = null; }
+  }
+
+  function playPause(){
+    if(!isReady) return;
+    const state = ytPlayer.getPlayerState();
+    if(state === YT.PlayerState.PLAYING){
+      ytPlayer.pauseVideo();
+    } else {
+      ytPlayer.playVideo();
+    }
+  }
+
+  function goNext(){
+    if(VIDEO_IDS.length < 2){
+      if(isReady){ ytPlayer.seekTo(0); ytPlayer.playVideo(); }
+      return;
+    }
+    currentIndex = (currentIndex + 1) % VIDEO_IDS.length;
+    loadArt(VIDEO_IDS[currentIndex]);
+    ytPlayer.loadVideoById(VIDEO_IDS[currentIndex]);
+  }
+  function goPrev(){
+    if(VIDEO_IDS.length < 2){
+      if(isReady){ ytPlayer.seekTo(0); ytPlayer.playVideo(); }
+      return;
+    }
+    currentIndex = (currentIndex - 1 + VIDEO_IDS.length) % VIDEO_IDS.length;
+    loadArt(VIDEO_IDS[currentIndex]);
+    ytPlayer.loadVideoById(VIDEO_IDS[currentIndex]);
+  }
+
+  playBtn.addEventListener('click', playPause);
+  nextBtn.addEventListener('click', goNext);
+  prevBtn.addEventListener('click', goPrev);
+
+  muteBtn.addEventListener('click', ()=>{
+    if(!isReady) return;
+    if(ytPlayer.isMuted()){
+      ytPlayer.unMute();
+      muteBtn.textContent = '🔊';
+    } else {
+      ytPlayer.mute();
+      muteBtn.textContent = '🔇';
+    }
+  });
+
+  volSlider.addEventListener('input', ()=>{
+    if(!isReady) return;
+    const v = Number(volSlider.value);
+    ytPlayer.setVolume(v);
+    if(v === 0){
+      muteBtn.textContent = '🔇';
+    } else {
+      if(ytPlayer.isMuted()) ytPlayer.unMute();
+      muteBtn.textContent = '🔊';
+    }
+  });
+
+  scrub.addEventListener('mousedown', ()=>{ scrubbing = true; });
+  scrub.addEventListener('touchstart', ()=>{ scrubbing = true; });
+  scrub.addEventListener('input', ()=>{
+    timeCurrent.textContent = fmtTime(Number(scrub.value));
+  });
+  function commitScrub(){
+    if(!isReady) return;
+    ytPlayer.seekTo(Number(scrub.value), true);
+    scrubbing = false;
+  }
+  scrub.addEventListener('change', commitScrub);
+  scrub.addEventListener('mouseup', ()=>{ setTimeout(()=>{ scrubbing = false; }, 50); });
+  scrub.addEventListener('touchend', ()=>{ setTimeout(()=>{ scrubbing = false; }, 50); });
+})();
+
+/* ===== RUMOR FEED ===== */
+(function(){
+  const sheetURL = 'https://docs.google.com/spreadsheets/d/1ycfipQTU9ffFt-wwjnNjezL6XSO0eMSmaReiZh-I7VQ/gviz/tq?tqx=out:json';
+  const feed = document.getElementById('rumor-feed');
+  const refreshBtn = document.getElementById('refreshBtn');
+
+  function escapeHTML(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function loadFeed(){
+    feed.innerHTML = '<div class="ls-rumor-loading">loading broadcast log…</div>';
+    fetch(sheetURL)
+      .then(res => res.text())
+      .then(text => {
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        const rows = json.table.rows;
+        feed.innerHTML = '';
+        let count = 0;
+        rows.reverse().forEach(row => {
+          const alias = row.c[1] ? row.c[1].v : 'Anonymous';
+          const message = row.c[2] ? row.c[2].v : '';
+          if(message && message.trim()){
+            count++;
+            const div = document.createElement('div');
+            div.className = 'ls-rumor-row';
+            div.innerHTML = `<span class="who">\u{1F399}\uFE0F ${escapeHTML(alias)}</span>${escapeHTML(message)}`;
+            feed.appendChild(div);
+          }
+        });
+        if(!count){
+          feed.innerHTML = '<div class="ls-rumor-empty">no rumors on the wire yet — be the first to submit one.</div>';
+        }
+      })
+      .catch(()=>{
+        feed.innerHTML = '<div class="ls-rumor-empty">broadcast log is off the air right now — try refreshing.</div>';
+      });
+  }
+
+  refreshBtn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    loadFeed();
+  });
+
+  loadFeed();
+})();
+</script>
 </body>
 </html>
