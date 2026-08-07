@@ -1100,17 +1100,19 @@
 
   function fetchReactionCounts(){
     if(!REACTIONS_API_URL) return Promise.resolve({});
-    return fetch(REACTIONS_API_URL)
+    // cache-bust: browsers can otherwise cache this GET and show stale (empty) counts
+    const bustedUrl = REACTIONS_API_URL + (REACTIONS_API_URL.includes('?') ? '&' : '?') + 't=' + Date.now();
+    return fetch(bustedUrl, { cache: 'no-store' })
       .then(res => res.json())
       .catch(()=> ({}));
   }
 
-  function sendReaction(rumorId, type){
+  function sendReaction(rumorId, type, action){
     if(!REACTIONS_API_URL) return Promise.resolve(null);
     return fetch(REACTIONS_API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids CORS preflight on Apps Script
-      body: JSON.stringify({ rumorId, type })
+      body: JSON.stringify({ rumorId, type, action })
     })
       .then(res => res.json())
       .catch(()=> null);
@@ -1185,16 +1187,32 @@
 
     const rumorId = btn.dataset.rumor;
     const type = btn.dataset.type;
+    const countEl = btn.querySelector('.count');
 
     reactedHere[rumorId] = reactedHere[rumorId] || {};
-    if(reactedHere[rumorId][type]) return; // one reaction per type per browser
-    reactedHere[rumorId][type] = true;
-    saveReactedHere();
-    btn.classList.add('reacted');
-    const countEl = btn.querySelector('.count');
-    countEl.textContent = (parseInt(countEl.textContent, 10) || 0) + 1;
+    const alreadyReacted = !!reactedHere[rumorId][type];
+    const action = alreadyReacted ? 'remove' : 'add';
 
-    sendReaction(rumorId, type);
+    // optimistic UI: toggle immediately, correct from server response after
+    btn.classList.toggle('reacted', !alreadyReacted);
+    const current = parseInt(countEl.textContent, 10) || 0;
+    countEl.textContent = Math.max(0, current + (alreadyReacted ? -1 : 1));
+
+    if(alreadyReacted){
+      delete reactedHere[rumorId][type];
+    } else {
+      reactedHere[rumorId][type] = true;
+    }
+    saveReactedHere();
+
+    sendReaction(rumorId, type, action).then(result => {
+      // trust the server's real count once it comes back, in case
+      // someone else reacted in between or the optimistic guess drifted
+      if(result && result[rumorId] && typeof result[rumorId][type] === 'number'){
+        countEl.textContent = result[rumorId][type];
+        reactionCounts[rumorId] = result[rumorId];
+      }
+    });
   });
 
   refreshBtn.addEventListener('click', (e)=>{
