@@ -602,16 +602,24 @@
 /* ===== RADIO PLAYER (YouTube IFrame API) ===== */
 (function(){
   // Playlist — add more video IDs here as you build one out.
-  // Next/prev will cycle through this array automatically.
+  // Playlist mode: point straight at a real YouTube playlist. Prev/Next,
+  // auto-advance, and looping are all handled natively by the YouTube
+  // player — add/reorder tracks in the playlist itself, no code edits needed.
+  const PLAYLIST_ID = 'PLDIoUOhQQPlWc-Kd6TCjTRIl0Z6fSQV0X';
+
+  // Fallback single-track mode, only used if PLAYLIST_ID above is set to ''.
   const VIDEO_IDS = ['fTKqtvXjkvo'];
+
+  const usePlaylist = !!PLAYLIST_ID;
 
   let ytPlayer = null;
   let currentIndex = 0;
   let isReady = false;
   let scrubbing = false;
   let pollTimer = null;
-  let currentWatchUrl = '';
+  let currentWatchUrl = usePlaylist ? `https://www.youtube.com/playlist?list=${PLAYLIST_ID}` : '';
   let erroredIds = new Set();
+  let errorStreak = 0;
 
   const playerEl = document.getElementById('player');
   const artImg = document.getElementById('artImg');
@@ -635,31 +643,32 @@
   }
 
   function loadArt(videoId){
+    if(!videoId) return;
     artImg.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-    currentWatchUrl = `https://www.youtube.com/watch?v=${videoId}`;
+    if(!usePlaylist) currentWatchUrl = `https://www.youtube.com/watch?v=${videoId}`;
     ytNote.style.display = 'none';
     ytNote.innerHTML = '';
   }
 
   function updateNavButtons(){
-    const multi = VIDEO_IDS.length > 1;
+    const multi = usePlaylist || VIDEO_IDS.length > 1;
     prevBtn.disabled = !multi;
     nextBtn.disabled = !multi;
   }
 
   window.onYouTubeIframeAPIReady = function(){
-    loadArt(VIDEO_IDS[currentIndex]);
+    if(!usePlaylist) loadArt(VIDEO_IDS[currentIndex]);
     ytPlayer = new YT.Player('ytHost', {
       height: '1',
       width: '1',
-      videoId: VIDEO_IDS[currentIndex],
-      playerVars: {
+      videoId: usePlaylist ? undefined : VIDEO_IDS[currentIndex],
+      playerVars: Object.assign({
         autoplay: 0,
         controls: 0,
         modestbranding: 1,
         rel: 0,
         playsinline: 1
-      },
+      }, usePlaylist ? { listType: 'playlist', list: PLAYLIST_ID, loop: 1 } : {}),
       events: {
         onReady: onPlayerReady,
         onStateChange: onPlayerStateChange,
@@ -680,6 +689,7 @@
       const data = ytPlayer.getVideoData();
       trackTitle.textContent = data && data.title ? data.title : 'now broadcasting';
       trackArtist.textContent = data && data.author ? data.author : '\u00A0';
+      if(usePlaylist && data && data.video_id){ loadArt(data.video_id); }
     }catch(e){
       trackTitle.textContent = 'now broadcasting';
     }
@@ -691,6 +701,7 @@
   function onPlayerStateChange(e){
     const state = e.data;
     if(state === YT.PlayerState.PLAYING){
+      errorStreak = 0;
       playerEl.classList.add('is-playing');
       playBtn.textContent = '⏸';
       updateMetaFromPlayer();
@@ -707,17 +718,30 @@
   }
 
   function onPlayerError(e){
-    const failedId = VIDEO_IDS[currentIndex];
-    erroredIds.add(failedId);
-
-    // codes 101/150 = embedding disabled by the uploader; 100 = removed/private; 2 = bad id
     playerEl.classList.remove('is-playing');
     playBtn.textContent = '▶';
     stopPolling();
+    errorStreak++;
 
+    // codes 101/150 = embedding disabled by the uploader; 100 = removed/private; 2 = bad id
+    if(usePlaylist){
+      if(errorStreak <= 5){
+        trackTitle.textContent = 'skipping unplayable track…';
+        trackArtist.textContent = '\u00A0';
+        setTimeout(goNext, 900);
+      } else {
+        trackTitle.textContent = 'too many tracks failed in a row';
+        trackArtist.textContent = 'check the playlist directly';
+        ytNote.style.display = 'block';
+        ytNote.innerHTML = `<a href="${currentWatchUrl}" target="_blank" rel="noopener">open the playlist on youtube ↗</a>`;
+      }
+      return;
+    }
+
+    const failedId = VIDEO_IDS[currentIndex];
+    erroredIds.add(failedId);
     const stillGood = VIDEO_IDS.filter(id => !erroredIds.has(id));
     if(stillGood.length){
-      // auto-skip to the next playable track rather than dead-ending
       trackTitle.textContent = 'skipping unplayable track…';
       trackArtist.textContent = '\u00A0';
       setTimeout(goNext, 900);
@@ -758,8 +782,13 @@
   }
 
   function goNext(){
+    if(!isReady) return;
+    if(usePlaylist){
+      ytPlayer.nextVideo();
+      return;
+    }
     if(VIDEO_IDS.length < 2){
-      if(isReady){ ytPlayer.seekTo(0); ytPlayer.playVideo(); }
+      ytPlayer.seekTo(0); ytPlayer.playVideo();
       return;
     }
     currentIndex = (currentIndex + 1) % VIDEO_IDS.length;
@@ -767,8 +796,13 @@
     ytPlayer.loadVideoById(VIDEO_IDS[currentIndex]);
   }
   function goPrev(){
+    if(!isReady) return;
+    if(usePlaylist){
+      ytPlayer.previousVideo();
+      return;
+    }
     if(VIDEO_IDS.length < 2){
-      if(isReady){ ytPlayer.seekTo(0); ytPlayer.playVideo(); }
+      ytPlayer.seekTo(0); ytPlayer.playVideo();
       return;
     }
     currentIndex = (currentIndex - 1 + VIDEO_IDS.length) % VIDEO_IDS.length;
