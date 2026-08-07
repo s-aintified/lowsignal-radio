@@ -446,13 +446,24 @@
 
   /* ===== rumor feed ===== */
   .ls-feed-head{
+    position:relative;
     font-family:'Space Mono', monospace;
     font-size:10.5px;
     letter-spacing:.14em;
     text-transform:uppercase;
     color:var(--ink-soft);
     text-align:center;
-    margin-bottom:12px;
+    margin-bottom:16px;
+    padding-bottom:10px;
+  }
+  .ls-feed-head::after{
+    content:"";
+    position:absolute;
+    left:50%; bottom:0;
+    transform:translateX(-50%);
+    width:60px; height:2px;
+    border-radius:2px;
+    background:linear-gradient(90deg, rgb(var(--g1)), rgb(var(--g2)), rgb(var(--g3)));
   }
   #rumor-feed{
     display:flex;
@@ -467,14 +478,23 @@
     padding:20px 0;
   }
   .ls-rumor-row{
+    position:relative;
     background:var(--hair-02);
     border:1px solid var(--border);
-    border-radius:12px;
+    border-left:3px solid rgb(var(--g1));
+    border-radius:10px 12px 12px 10px;
     padding:12px 14px;
     font-family:'Work Sans', sans-serif;
     font-size:13px;
     line-height:1.55;
     color:var(--ink-soft);
+    opacity:0;
+    transform:translateY(6px);
+    transition:opacity .35s ease, transform .35s ease;
+  }
+  .ls-rumor-row.show{
+    opacity:1;
+    transform:translateY(0);
   }
   .ls-rumor-row .who{
     font-family:'Space Mono', monospace;
@@ -485,50 +505,125 @@
     color:var(--amber-text);
     margin-right:6px;
   }
+  .ls-rumor-top{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:4px;
+  }
+  .ls-rumor-time{
+    font-family:'Space Mono', monospace;
+    font-size:9px;
+    letter-spacing:.04em;
+    color:var(--placeholder);
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+  .ls-rumor-msg{display:block;}
+  .ls-rumor-reactions{
+    display:flex;
+    gap:6px;
+    margin-top:10px;
+  }
+  .ls-react-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    background:var(--hair-03);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:3px 9px;
+    font-family:'Space Mono', monospace;
+    font-size:10.5px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease, transform .1s ease;
+  }
+  .ls-react-btn:hover{border-color:rgb(var(--g1)); background:rgba(var(--g1),.1);}
+  .ls-react-btn:active{transform:scale(.94);}
+  .ls-react-btn.reacted{
+    border-color:rgb(var(--g1));
+    background:rgba(var(--g1),.16);
+    color:var(--ink);
+  }
+  .ls-react-btn .count{font-weight:700;}
+
+  /* ===== floating now-playing badge ===== */
+  .ls-float-badge{
+    position:fixed;
+    right:16px;
+    bottom:16px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:rgba(var(--card-rgb), .96);
+    border:1px solid var(--border);
+    border-radius:40px;
+    padding:8px 14px 8px 8px;
+    box-shadow:0 10px 26px rgba(0,0,0,.3), 0 0 0 1px rgba(var(--g1),.25);
+    opacity:0;
+    transform:translateY(12px) scale(.96);
+    pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;
+    z-index:500;
+    max-width:min(300px, calc(100vw - 32px));
+  }
+  .ls-float-badge.show{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    pointer-events:auto;
+  }
+  .ls-float-play{
+    flex-shrink:0;
+    width:34px;height:34px;
+    border-radius:50%;
+    border:0;
+    background:linear-gradient(120deg, rgb(var(--g1)), rgb(var(--g2)), rgb(var(--g3)));
+    color:#101010;
+    font-size:13px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .ls-float-play:hover{filter:brightness(1.08);}
+  .ls-float-meta{min-width:0;}
+  .ls-float-title{
+    font-family:'Oswald', sans-serif;
+    font-weight:600;
+    font-size:12px;
+    color:var(--ink);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:200px;
+  }
+  .ls-float-onair{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    font-family:'Space Mono', monospace;
+    font-size:8.5px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+  .ls-float-onair .dot{
+    width:5px;height:5px;border-radius:50%;
+    background:var(--placeholder);
+  }
+  .ls-float-badge.is-playing .ls-float-onair .dot{
+    background:var(--live);
+    animation:ls-livepulse 1.6s ease-in-out infinite;
+  }
 
   @media (max-width:600px){
     .ls-wrap{padding:16px;}
     .ls-banner{height:150px;}
     .ls-title{font-size:20px;}
-  }
-
-  /* ===== alternate players (Spotify / Apple Music) ===== */
-  .ls-alt-players{
-    margin-top:16px;
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-  }
-  .ls-alt-card{
-    background:rgba(var(--card-rgb), var(--card-op));
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:14px 16px 16px;
-  }
-  .ls-alt-head{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    margin-bottom:10px;
-  }
-  .ls-alt-label{
-    font-family:'Space Mono', monospace;
-    font-size:10.5px;
-    letter-spacing:.14em;
-    text-transform:uppercase;
-    color:var(--amber-text);
-  }
-  .ls-alt-note{
-    font-family:'Work Sans', sans-serif;
-    font-size:11px;
-    color:var(--ink-soft);
-    margin-left:auto;
-  }
-  .ls-alt-card iframe{
-    display:block;
-    width:100%;
-    border-radius:12px;
-    background:var(--hair-02);
+    .ls-float-badge{right:10px; bottom:10px;}
   }
 </style>
 </head>
@@ -544,13 +639,9 @@
     </div>
   </div>
 
-  <div class="ls-alt-head" style="margin:18px 0 8px;">
-    <span class="ls-alt-label">▶ YouTube</span>
-    <span class="ls-alt-note">no account needed — works for most tracks</span>
-  </div>
   <div class="ls-player" id="player">
     <div class="ls-art">
-      <img id="artImg" src="" alt="now playing">
+      <img id="artImg" src="https://i.etsystatic.com/50459052/r/il/46638d/7030410083/il_794xN.7030410083_dtco.jpg" alt="now playing">
       <div class="ls-art-ring"></div>
     </div>
     <div class="ls-meta">
@@ -583,34 +674,11 @@
 
   <div id="ytHost"></div>
 
-  <div class="ls-alt-players">
-    <div class="ls-alt-card">
-      <div class="ls-alt-head">
-        <span class="ls-alt-label">🎧 Spotify</span>
-        <span class="ls-alt-note">requires the spotify app/account for full tracks</span>
-      </div>
-      <iframe
-        src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator"
-        height="152"
-        frameborder="0"
-        allowfullscreen=""
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy"></iframe>
-    </div>
-
-    <div class="ls-alt-card">
-      <div class="ls-alt-head">
-        <span class="ls-alt-label">🍎 Apple Music</span>
-        <span class="ls-alt-note">requires the apple music app/account for full tracks</span>
-      </div>
-      <iframe
-        allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
-        frameborder="0"
-        height="450"
-        style="max-width:660px;"
-        sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
-        src="https://embed.music.apple.com/us/playlist/todays-hits/pl.f4d106fed2bd41149aaacabb233eb5eb"
-        loading="lazy"></iframe>
+  <div class="ls-float-badge" id="floatBadge">
+    <button class="ls-float-play" id="floatPlayBtn" title="play/pause" type="button">▶</button>
+    <div class="ls-float-meta">
+      <div class="ls-float-title" id="floatTitle">not playing</div>
+      <div class="ls-float-onair"><span class="dot"></span> low signal radio</div>
     </div>
   </div>
 
@@ -695,6 +763,9 @@
   let erroredIds = new Set();
   let errorStreak = 0;
 
+  const IDLE_ART_URL = 'https://i.etsystatic.com/50459052/r/il/46638d/7030410083/il_794xN.7030410083_dtco.jpg';
+  const ORIGINAL_TITLE = document.title;
+
   const playerEl = document.getElementById('player');
   const artImg = document.getElementById('artImg');
   const trackTitle = document.getElementById('trackTitle');
@@ -708,12 +779,19 @@
   const timeCurrent = document.getElementById('timeCurrent');
   const timeTotal = document.getElementById('timeTotal');
   const ytNote = document.getElementById('ytNote');
+  const floatBadge = document.getElementById('floatBadge');
+  const floatPlayBtn = document.getElementById('floatPlayBtn');
+  const floatTitle = document.getElementById('floatTitle');
 
   function fmtTime(sec){
     if(!isFinite(sec) || sec < 0) sec = 0;
     const m = Math.floor(sec/60);
     const s = Math.floor(sec%60).toString().padStart(2,'0');
     return `${m}:${s}`;
+  }
+
+  function setIdleArt(){
+    artImg.src = IDLE_ART_URL;
   }
 
   function loadArt(videoId){
@@ -757,20 +835,26 @@
     ytPlayer.setVolume(Number(volSlider.value));
     updateMetaFromPlayer();
     updateNavButtons();
+    setIdleArt();
   }
 
   function updateMetaFromPlayer(){
+    let title = 'now broadcasting';
     try{
       const data = ytPlayer.getVideoData();
-      trackTitle.textContent = data && data.title ? data.title : 'now broadcasting';
+      title = data && data.title ? data.title : 'now broadcasting';
+      trackTitle.textContent = title;
       trackArtist.textContent = data && data.author ? data.author : '\u00A0';
-      if(usePlaylist && data && data.video_id){ loadArt(data.video_id); }
+      if(usePlaylist && data && data.video_id && ytPlayer.getPlayerState() === YT.PlayerState.PLAYING){
+        loadArt(data.video_id);
+      }
     }catch(e){
       trackTitle.textContent = 'now broadcasting';
     }
     const dur = ytPlayer.getDuration ? ytPlayer.getDuration() : 0;
     timeTotal.textContent = fmtTime(dur);
     scrub.max = dur || 100;
+    floatTitle.textContent = title;
   }
 
   function onPlayerStateChange(e){
@@ -778,24 +862,36 @@
     if(state === YT.PlayerState.PLAYING){
       errorStreak = 0;
       playerEl.classList.add('is-playing');
+      floatBadge.classList.add('is-playing');
       playBtn.textContent = '⏸';
+      floatPlayBtn.textContent = '⏸';
       updateMetaFromPlayer();
       startPolling();
+      document.title = `▶ ${trackTitle.textContent} — LOW SIGNAL`;
     } else if(state === YT.PlayerState.PAUSED){
       playerEl.classList.remove('is-playing');
+      floatBadge.classList.remove('is-playing');
       playBtn.textContent = '▶';
+      floatPlayBtn.textContent = '▶';
       stopPolling();
+      setIdleArt();
+      document.title = ORIGINAL_TITLE;
     } else if(state === YT.PlayerState.ENDED){
       goNext();
     } else if(state === YT.PlayerState.CUED){
       updateMetaFromPlayer();
+      setIdleArt();
     }
   }
 
   function onPlayerError(e){
     playerEl.classList.remove('is-playing');
+    floatBadge.classList.remove('is-playing');
     playBtn.textContent = '▶';
+    floatPlayBtn.textContent = '▶';
     stopPolling();
+    setIdleArt();
+    document.title = ORIGINAL_TITLE;
     errorStreak++;
 
     // codes 101/150 = embedding disabled by the uploader; 100 = removed/private; 2 = bad id
@@ -925,13 +1021,46 @@
   scrub.addEventListener('change', commitScrub);
   scrub.addEventListener('mouseup', ()=>{ setTimeout(()=>{ scrubbing = false; }, 50); });
   scrub.addEventListener('touchend', ()=>{ setTimeout(()=>{ scrubbing = false; }, 50); });
+
+  // floating badge: shows once the main player scrolls out of view,
+  // so playback can still be controlled from further down the page
+  floatPlayBtn.addEventListener('click', playPause);
+  if('IntersectionObserver' in window){
+    const playerObserver = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        floatBadge.classList.toggle('show', !entry.isIntersecting);
+      });
+    }, { threshold: 0 });
+    playerObserver.observe(playerEl);
+  }
 })();
 
 /* ===== RUMOR FEED ===== */
 (function(){
   const sheetURL = 'https://docs.google.com/spreadsheets/d/1ycfipQTU9ffFt-wwjnNjezL6XSO0eMSmaReiZh-I7VQ/gviz/tq?tqx=out:json';
+
+  // Paste your deployed Google Apps Script web app URL here to turn on
+  // shared public reactions. Leave blank and reactions just show as "–".
+  const REACTIONS_API_URL = 'https://script.google.com/macros/s/AKfycbxbm7FhW5p43uScym12AZYUs7UiWFiv6w4K01a4M-XxXwdTDpeW0ltXM5DbLt8Jdo1i/exec';
+
+  const REACTIONS = [
+    { type: 'fire',  emoji: '🔥' },
+    { type: 'eyes',  emoji: '👀' },
+    { type: 'skull', emoji: '💀' }
+  ];
+
   const feed = document.getElementById('rumor-feed');
   const refreshBtn = document.getElementById('refreshBtn');
+  let reactionCounts = {}; // rumorId -> {fire, eyes, skull}
+  let reactedHere = {};    // localStorage-backed: what THIS browser already clicked
+
+  try{
+    reactedHere = JSON.parse(localStorage.getItem('lowSignalRadio_reacted') || '{}');
+  }catch(e){ reactedHere = {}; }
+
+  function saveReactedHere(){
+    try{ localStorage.setItem('lowSignalRadio_reacted', JSON.stringify(reactedHere)); }catch(e){}
+  }
 
   function escapeHTML(str){
     const div = document.createElement('div');
@@ -939,34 +1068,134 @@
     return div.innerHTML;
   }
 
+  // stable short id from timestamp+alias+message so the same rumor
+  // gets the same id across reloads, without needing real database rows
+  function hashId(str){
+    let h = 5381;
+    for(let i=0;i<str.length;i++){
+      h = ((h << 5) + h) + str.charCodeAt(i);
+      h = h & h;
+    }
+    return (h >>> 0).toString(36);
+  }
+
+  function parseGvizDate(raw){
+    if(typeof raw !== 'string') return null;
+    const m = raw.match(/^Date\((\d+),(\d+),(\d+)(?:,(\d+),(\d+),(\d+))?\)$/);
+    if(!m) return null;
+    const nums = m.slice(1).map(v => v === undefined ? 0 : Number(v));
+    const [y, mo, d, h, mi, s] = nums;
+    return new Date(y, mo, d, h, mi, s);
+  }
+
+  function relativeTime(date){
+    if(!date || isNaN(date.getTime())) return '';
+    const diff = (Date.now() - date.getTime()) / 1000;
+    if(diff < 45) return 'just now';
+    if(diff < 3600) return Math.max(1, Math.floor(diff/60)) + 'm ago';
+    if(diff < 86400) return Math.floor(diff/3600) + 'h ago';
+    if(diff < 604800) return Math.floor(diff/86400) + 'd ago';
+    return date.toLocaleDateString();
+  }
+
+  function fetchReactionCounts(){
+    if(!REACTIONS_API_URL) return Promise.resolve({});
+    return fetch(REACTIONS_API_URL)
+      .then(res => res.json())
+      .catch(()=> ({}));
+  }
+
+  function sendReaction(rumorId, type){
+    if(!REACTIONS_API_URL) return Promise.resolve(null);
+    return fetch(REACTIONS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids CORS preflight on Apps Script
+      body: JSON.stringify({ rumorId, type })
+    })
+      .then(res => res.json())
+      .catch(()=> null);
+  }
+
+  function renderReactionButtons(rumorId){
+    const counts = reactionCounts[rumorId] || {};
+    const mine = reactedHere[rumorId] || {};
+    return REACTIONS.map(r => {
+      const n = counts[r.type];
+      const displayCount = (typeof n === 'number') ? n : (REACTIONS_API_URL ? 0 : '–');
+      const isReacted = !!mine[r.type];
+      return `<button type="button" class="ls-react-btn${isReacted ? ' reacted' : ''}" data-rumor="${rumorId}" data-type="${r.type}">${r.emoji} <span class="count">${displayCount}</span></button>`;
+    }).join('');
+  }
+
   function loadFeed(){
     feed.innerHTML = '<div class="ls-rumor-loading">loading broadcast log…</div>';
-    fetch(sheetURL)
-      .then(res => res.text())
-      .then(text => {
-        const json = JSON.parse(text.substr(47).slice(0, -2));
-        const rows = json.table.rows;
-        feed.innerHTML = '';
-        let count = 0;
-        rows.reverse().forEach(row => {
-          const alias = row.c[1] ? row.c[1].v : 'Anonymous';
-          const message = row.c[2] ? row.c[2].v : '';
-          if(message && message.trim()){
-            count++;
-            const div = document.createElement('div');
-            div.className = 'ls-rumor-row';
-            div.innerHTML = `<span class="who">\u{1F399}\uFE0F ${escapeHTML(alias)}</span>${escapeHTML(message)}`;
-            feed.appendChild(div);
-          }
+
+    Promise.all([
+      fetch(sheetURL).then(res => res.text()),
+      fetchReactionCounts()
+    ]).then(([text, counts]) => {
+      reactionCounts = counts || {};
+      const json = JSON.parse(text.substr(47).slice(0, -2));
+      const rows = json.table.rows;
+      feed.innerHTML = '';
+      let count = 0;
+
+      rows.reverse().forEach(row => {
+        const rawDate = row.c[0] ? row.c[0].v : null;
+        const dateFallback = row.c[0] && row.c[0].f ? row.c[0].f : '';
+        const alias = row.c[1] ? row.c[1].v : 'Anonymous';
+        const message = row.c[2] ? row.c[2].v : '';
+        if(!message || !message.trim()) return;
+        count++;
+
+        const parsedDate = parseGvizDate(rawDate) || (dateFallback ? new Date(dateFallback) : null);
+        const timeLabel = relativeTime(parsedDate) || dateFallback || '';
+        const rumorId = hashId(`${rawDate || dateFallback}|${alias}|${message}`);
+
+        const div = document.createElement('div');
+        div.className = 'ls-rumor-row';
+        div.innerHTML = `
+          <div class="ls-rumor-top">
+            <span class="who">\u{1F399}\uFE0F ${escapeHTML(alias)}</span>
+            <span class="ls-rumor-time">${escapeHTML(timeLabel)}</span>
+          </div>
+          <span class="ls-rumor-msg">${escapeHTML(message)}</span>
+          <div class="ls-rumor-reactions">${renderReactionButtons(rumorId)}</div>
+        `;
+        feed.appendChild(div);
+
+        // fade the row in, staggered slightly per row for a broadcast-log feel
+        requestAnimationFrame(()=>{
+          setTimeout(()=>{ div.classList.add('show'); }, Math.min(count, 12) * 35);
         });
-        if(!count){
-          feed.innerHTML = '<div class="ls-rumor-empty">no rumors on the wire yet — be the first to submit one.</div>';
-        }
-      })
-      .catch(()=>{
-        feed.innerHTML = '<div class="ls-rumor-empty">broadcast log is off the air right now — try refreshing.</div>';
       });
+
+      if(!count){
+        feed.innerHTML = '<div class="ls-rumor-empty">no rumors on the wire yet — be the first to submit one.</div>';
+      }
+    }).catch(()=>{
+      feed.innerHTML = '<div class="ls-rumor-empty">broadcast log is off the air right now — try refreshing.</div>';
+    });
   }
+
+  feed.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.ls-react-btn');
+    if(!btn) return;
+    if(!REACTIONS_API_URL) return; // reactions backend not connected yet
+
+    const rumorId = btn.dataset.rumor;
+    const type = btn.dataset.type;
+
+    reactedHere[rumorId] = reactedHere[rumorId] || {};
+    if(reactedHere[rumorId][type]) return; // one reaction per type per browser
+    reactedHere[rumorId][type] = true;
+    saveReactedHere();
+    btn.classList.add('reacted');
+    const countEl = btn.querySelector('.count');
+    countEl.textContent = (parseInt(countEl.textContent, 10) || 0) + 1;
+
+    sendReaction(rumorId, type);
+  });
 
   refreshBtn.addEventListener('click', (e)=>{
     e.preventDefault();
